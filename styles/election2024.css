@@ -1,6 +1,6 @@
 body {
     background: #EEE;
-    margin: 16px;
+    margin: 32px;
     margin-left: calc(16px + 48px);
     max-width: 800px;
 }
@@ -40,12 +40,13 @@ td {
 #run {
     margin-top: 16px;
     border: none;
-    background: #14972e;
+    background: #007aff;
     color: white;
-    font-weight: 700;
-    padding: 8px 26px;
+    font-weight: 500;
+    padding: 12px 24px;
     font-size: 1.2em;
-    border-radius: 3px;
+    border-radius: 12px;
+    transition: .2s;
 }
 
 #run:hover {
@@ -109,6 +110,7 @@ h1 {
 
 .moeContainer {
     display: none;
+    margin-top: 6px;
 }
 
 #loading {
@@ -141,4 +143,20 @@ h1 {
 
 #moeUniversalContainer {
     display: none;
+}
+
+input[type=number] {
+    font-size: 1.13em;
+    width: 100px;
+}
+
+.state input[type=range] {
+    position: relative;
+    top: 6px;
+    margin: 0 6px;
+}
+
+.chanceinput {
+    width: 47px !important;
+    font-size: 1em !important;
 }

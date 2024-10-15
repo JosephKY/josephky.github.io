@@ -172,14 +172,34 @@ class State {
         this.chanceInputElement.min = 0
         this.chanceInputElement.max = 100
         this.chanceInputElement.value = chance
+        this.chanceInputNumElement = document.createElement("input")
+        this.chanceInputNumElement.type = "number"
+        this.chanceInputNumElement.min = 0
+        this.chanceInputNumElement.max = 100
+        this.chanceInputNumElement.value = chance
+        this.chanceInputNumElement.classList.add("chanceinput")
         this.chanceInputLabelElement = document.createElement("label")
-        this.chanceInputLabelElement.innerHTML = `${chance}% ${chancelabel(this.chance)}`
+        this.chanceInputLabelElement.innerHTML = `% ${chancelabel(this.chance)}`
         this.chanceInputLabelElement.style.color = chancecolor(this.chance)
         this.chanceInputElement.oninput = ()=>{
             this.chance = this.chanceInputElement.value
-            this.chanceInputLabelElement.innerHTML = `${this.chance}% ${chancelabel(this.chance)}`
+            this.chanceInputNumElement.value = this.chance
+            this.chanceInputLabelElement.innerHTML = `% ${chancelabel(this.chance)}`
             this.chanceInputLabelElement.style.color = chancecolor(this.chance)
         }
+        this.chanceInputNumElement.oninput = ()=>{
+            this.chance = this.chanceInputNumElement.value
+            this.chanceInputElement.value = this.chance
+            this.chanceInputLabelElement.innerHTML = `% ${chancelabel(this.chance)}`
+            this.chanceInputLabelElement.style.color = chancecolor(this.chance)
+        }
+        this.chanceInputNumElement.addEventListener("change", ()=>{
+            this.chanceInputNumElement.value = Math.min(100, Math.max(0, this.chance))
+            this.chance = this.chanceInputNumElement.value
+            this.chanceInputElement.value = this.chance
+            this.chanceInputLabelElement.innerHTML = `% ${chancelabel(this.chance)}`
+            this.chanceInputLabelElement.style.color = chancecolor(this.chance)
+        })
         this.chanceInputElement.addEventListener("change", ()=>{
             if(autochange)run()
         })
@@ -192,22 +212,39 @@ class State {
         this.moeInputElement.min = 0
         this.moeInputElement.max = 100
         this.moeInputElement.value = 0
+        this.moeInputNumElement = document.createElement("input")
+        this.moeInputNumElement.type = "number"
+        this.moeInputNumElement.min = 0
+        this.moeInputNumElement.max = 100
+        this.moeInputNumElement.value = 0
+        this.moeInputNumElement.classList.add("chanceinput")
         this.moeInputLabelElement = document.createElement("label")
-        this.moeInputLabelElement.innerHTML = "0%"
+        this.moeInputLabelElement.innerHTML = "%"
         this.moeInputElement.oninput = ()=>{
             this.moe = this.moeInputElement.value
-            this.moeInputLabelElement.innerHTML = `${this.moe}%`
+            this.moeInputNumElement.value = this.moe
         }
+        this.moeInputNumElement.oninput = ()=>{
+            this.moe = this.moeInputNumElement.value
+            this.moeInputElement.value = this.moe
+        }
+        this.moeInputNumElement.addEventListener("change", ()=>{
+            this.moeInputNumElement.value = Math.min(100, Math.max(0, this.moe))
+            this.moe = this.moeInputNumElement.value
+            this.moeInputElement.value = this.moe
+        })
         this.moeInputElement.addEventListener("change", ()=>{
             if(autochange)run()
         })
         this.moeContainerElement.appendChild(this.moeNameElement)
         this.moeContainerElement.appendChild(this.moeInputElement)
+        this.moeContainerElement.appendChild(this.moeInputNumElement)
         this.moeContainerElement.appendChild(this.moeInputLabelElement)
         this.moeContainerElement.appendChild(document.createElement("br"))
         this.container.appendChild(this.nameElement)
         this.container.appendChild(this.chanceInputNameElement)
         this.container.appendChild(this.chanceInputElement)
+        this.container.appendChild(this.chanceInputNumElement)
         this.container.appendChild(this.chanceInputLabelElement)
         this.container.appendChild(document.createElement("br"))
         this.container.appendChild(this.moeContainerElement)
