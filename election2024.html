@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Joseph - 2024 Election Prediction Utility
+        </title>
+        <link rel="stylesheet" href="./styles/election2024.css"/>
+    </head>
+    <body> 
+        <div id="navigator"></div>
+        <div id="loading"><h1>Loading...</h1></div>
+
+        <h1>Election Prediction Utility</h1>
+        <h2 id="information">Information</h2>
+        <p>This utility predicts the chances of victory for the Democratic candidate, 
+            Kamala Harris, and the Republican candidate, Donald Trump, or a tie, for the 2024
+            United States Presidential Election. It does so based on user-defined winning chances 
+            for the Democratic and Republican candidate per-state and runs a high amount of election
+            simulations to find the outcome averages. 
+        </p>
+        <p>Like or appreciate my software? Please consider supporting me:</p>
+        <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="josephky" data-color="#5F7FFF" data-emoji="☕"  data-font="Poppins" data-text="Buy Me a Coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+        <p>Check out my other software <a href="https://josephky.github.io">here</a></p>
+        <h2 id="outcomepredictions">Outcome Predictions</h2>
+        <table id="outcomes">
+            <tr>
+                <th>#</th>
+                <th id="demheader">Kamala Harris</th>
+                <th id="repheader">Donald Trump</th>
+                <th>Tie</th>
+            </tr>
+        </table>
+        <button id="run">Run</button>
+        <h2 id="settings">Settings</h2>
+        <h3>Outcomes</h3>
+        <input type="checkbox" id="autogen">
+        <label for="autogen">Automatically Run After Changing Settings</label><br><br>
+        <input type="number" min="1" max="50" value="5" id="outcomeAmount">
+        <label for="outcomeAmount">Number of Outcome Predictions</label><br><br>
+        <input type="number" min="100" max="2147483647" step="100" value="5000" id="numsims">
+        <label for="numsims">Number of Simulations per Outcome Prediction</label>
+        <p>In general, the more simulations ran per outcome prediction, the more average that prediction will be. More simulations will put more load on your CPU.</p>
+        <h3>Margin of Error</h3>
+        <p>Margin of error will make outcomes more random and unpredictable. This could help accurately 
+            depict the uncertainty of the real outcome.
+        </p>
+        <input type="radio" name="moe" id="moeDisabled" checked="checked">
+        <label for="moeDisabled">Disabled</label><br>
+        <div id="moeUniversalContainer"><input type="radio" name="moe" id="moeUniversal">
+        <label for="moeUniversal">Universal</label>
+        <input type="range" min="0" max="100" value="10" id="moeUniversalValue" disabled>
+        <label for="moeUniversalValue" id="moeUniversalValueLabel">10%</label><br>
+        <i>Universal margin of error results can be highly unreliable</i></div>
+        <input type="radio" name="moe" id="moePerState">
+        <label for="moePerState">Per-State</label>
+        <h2 id="states">States</h2>
+        <h3>Battleground States</h3>
+        <div id="battlegroundStates">
+
+        </div>
+        <h3>Other States</h3>
+        <div id="otherStates">
+
+        </div>
+    </body>
+    <script src="./scripts/election2024.js"></script>
+</html>

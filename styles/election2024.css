@@ -1,0 +1,144 @@
+body {
+    background: #EEE;
+    margin: 16px;
+    margin-left: calc(16px + 48px);
+    max-width: 800px;
+}
+
+h1, h2, p {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    text-align: left;
+    padding: 8px
+}
+
+tr:nth-child(odd) {
+    background: #fff;
+}
+
+tr:nth-child(even) {
+    background: #fff;
+}
+
+#demheader {
+    background: #ceceff;
+    color: #000062;
+}
+
+#repheader {
+    background: #ffb1b1;
+    color: #500;
+}
+
+td {
+    text-align: center;
+}
+
+#run {
+    margin-top: 16px;
+    border: none;
+    background: #14972e;
+    color: white;
+    font-weight: 700;
+    padding: 8px 26px;
+    font-size: 1.2em;
+    border-radius: 3px;
+}
+
+#run:hover {
+    filter: brightness(1.25);
+    cursor: pointer;
+}
+
+#run:active {
+    filter: brightness(0.85)
+}
+
+h2 {
+    margin-top: 48px;
+}
+
+#navigator {
+    background: rgba(0,0,0,.7);
+    height: 100vh;
+    width: 48px;
+    position: fixed;
+    left:0;
+    top:0;
+}
+
+.nav {
+    width: 48px;
+    box-sizing: border-box;
+    padding: 8px;
+    opacity: .75;
+    border-bottom: 1px solid #BFBFBF;
+}
+
+.nav:hover {
+    cursor: pointer;
+    opacity: 1;
+}
+
+.nav:active {
+    opacity: 0.9;
+}
+
+.nav:last-child {
+    border-bottom: none;
+}
+
+h3 {
+    font-size: 1.1em;
+}
+
+h2 {
+    font-size: 1.75em;
+}
+
+h1 {
+    font-size: 2.1em;
+}
+
+.state h4 {
+    margin-bottom: 0;
+}
+
+.moeContainer {
+    display: none;
+}
+
+#loading {
+    background: rgba(0,0,0,.8);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: column;
+    display: none;
+}
+
+#loading * {
+    color: white;
+    margin: 0;
+    user-select: none;
+}
+
+#loading h1 {
+    font-size: 3em;
+}
+
+#loading h4 {
+    margin-top: 10px;
+}
+
+#moeUniversalContainer {
+    display: none;
+}
