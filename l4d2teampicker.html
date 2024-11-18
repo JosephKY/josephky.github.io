@@ -188,13 +188,9 @@
 				}
 			}); 
 		</script>
-		<style>
-			
+		<style>	
 
-
-			
-
-			body {
+body {
   /*! background: #000; */
   color: white;
   width: fit-content;
@@ -223,6 +219,7 @@ html {
   padding: 16px;
   display: flex;
   flex-flow: column;
+  border-right: 1px solid #ffffff30;
 }
 #teams {
   display: flex;
@@ -287,7 +284,11 @@ html {
 }
 
 .h {
-	font-size: 1.35em;
+	font-size: 1.35em !important;
+	font-weight: 700;
+	text-align: center;
+	position: relative;
+	bottom: 12px;
 }
 
 
@@ -398,6 +399,18 @@ html {
 
 #alreadyContainer {
 	overflow: clip;
+}
+		
+		
+#survivors {
+  border-right: 1px solid #ffffff30;
+}
+.team span {
+  text-align: center;
+  font-size: 1.2em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 200px;
 }
 		
 		</style>
