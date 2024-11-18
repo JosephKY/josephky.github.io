@@ -3,8 +3,9 @@
 	<head>
 		<title>Chogi's Amazing L4D2 Team Picker</title>
 		<body>
-			<div id="alreadyContainer">
-				<span id="already">Cannot have two players with the same name</span>
+			<button id="ellis"></button>
+			<div id="errContainer">
+				<span id="err"></span>
 			</div>
 			
 			<div id="main">
@@ -28,6 +29,144 @@
 			<button id="go">Create Random Teams</button>
 		</body>
 		<script>
+
+			class Sound {
+				static sounds = {}
+
+				constructor(id, filePath, duration, audioContext) {
+					this.id = id;
+					this.filePath = filePath;
+					this.duration = duration;
+					this.audioContext = audioContext || new (window.AudioContext || window.webkitAudioContext)();
+					this.audioBuffer = null;
+					this.sourceNode = null;
+					Sound.sounds[id] = this
+					this.preload()
+				}
+
+				/**
+				 * Preload the sound file.
+				 * @returns {Promise<void>}
+				 */
+				async preload() {
+					if(!this.filePath){
+						console.log("no filepath: ", this.id)
+					}
+					try {
+						const response = await fetch(this.filePath);
+						const arrayBuffer = await response.arrayBuffer();
+						this.audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
+						console.log(`Sound preloaded: ${this.filePath}`);
+					} catch (error) {
+						console.error(`Failed to preload sound: ${this.filePath}`, error);
+					}
+				}
+
+				/**
+				 * Play the sound.
+				 * @param {boolean} loop - Whether the sound should loop.
+				 */
+				play(loop = false) {
+					if (!this.audioBuffer) {
+						console.error(`Sound not preloaded: ${this.filePath}`);
+						return;
+					}
+					this.stop(); // Stop any existing playback before starting a new one
+					this.sourceNode = this.audioContext.createBufferSource();
+					this.sourceNode.buffer = this.audioBuffer;
+					this.sourceNode.loop = loop;
+					this.sourceNode.connect(this.audioContext.destination);
+					this.sourceNode.start(0);
+				}
+
+				/**
+				 * Stop the sound.
+				 */
+				stop() {
+					if (this.sourceNode) {
+						this.sourceNode.stop();
+						this.sourceNode.disconnect();
+						this.sourceNode = null;
+					}
+				}
+			}
+
+			[
+				["ellisstoriesa01", 8128],
+				["ellisstoriesa02", 618],
+				["ellisstoriesb01", 12429],
+				["ellisstoriesb02", 1734],
+				["ellisstoriesc01", 13634],
+				["ellisstoriesd01", 24182],
+				["ellisstoriese01", 10185],
+				["ellisstoriesf01", 8632],
+				["ellisstoriesg01", 14525],
+				["ellisstoriesh01", 13538],
+				["ellisstoriesi01", 16891],
+				["interrupt0", 4247],
+				["interrupt1", 1646],
+				["interrupt2", 1967],
+				["interrupt3", 3865],
+				["interrupt4", 2799],
+				["interrupt5", 2299],
+				["interrupt6", 3717],
+				["interrupt7", 3902],
+				["interrupt8", 2715],
+				["interrupt9", 3843],
+				["interrupt10", 2397],
+				["interrupt11", 1742],
+				["interrupt12", 3412],
+				["interrupt13", 2864]
+			].forEach(f=>{
+				new Sound(f[0], `./assets/l4d2stories/${f[0]}.wav`, f[1])
+			})
+
+
+			class Story {
+				static stories = {}
+
+				constructor(soundMain, soundResponse=undefined){
+					this.id = soundMain
+					this.soundMain = Sound.sounds[soundMain]
+					this.soundResponse = soundResponse ? Sound.sounds[soundResponse] : null
+					console.log(this.id)
+					Story.stories[this.id] = this
+				}
+
+				tell(){
+					this.soundMain.play()
+					setTimeout(()=>{
+						let interrupt = Sound.sounds[`interrupt${Math.floor(Math.random() * 14)}`];
+						interrupt.play()
+						if(this.soundResponse){
+							setTimeout(()=>{
+								this.soundResponse.play()
+							}, interrupt.duration)
+						}
+					}, this.soundMain.duration)
+				}
+
+				static random(){
+					let stories = Object.values(Story.stories)
+					console.log(Story.stories)
+					console.log(Math.floor(Math.random() * stories.length))
+					stories[Math.floor(Math.random() * stories.length)].tell()
+				}
+			}
+
+			new Story("ellisstoriesa01", "ellisstoriesa02")
+			new Story("ellisstoriesb01", "ellisstoriesb02")
+			new Story("ellisstoriesc01")
+			new Story("ellisstoriesd01")
+			new Story("ellisstoriese01")
+			new Story("ellisstoriesf01")
+			new Story("ellisstoriesg01")
+			new Story("ellisstoriesh01")
+			new Story("ellisstoriesi01")
+
+			document.getElementById("ellis").addEventListener("click", ()=>{
+				Story.random()
+			})
 
 			class Player {
 				static players = {}
@@ -113,16 +252,17 @@
 				}
 			}
 
-			const already = document.getElementById("already")
-			let alreadyMsgDismiss;
-			function alreadyMsg(){
-				already.style.top = "0"
-				alreadyMsgDismiss = Date.now() + 3500
+			const err = document.getElementById("err")
+			let errMsgDismiss;
+			function errMsg(message){
+				err.style.top = "0"
+				err.innerHTML = message
+				errMsgDismiss = Date.now() + 3500
 				function check(){
-					if(!alreadyMsgDismiss)return
-					if(Date.now() > alreadyMsgDismiss){
-						already.style.top = "48px"
-						alreadyMsgDismiss = undefined;
+					if(!errMsgDismiss)return
+					if(Date.now() > errMsgDismiss){
+						err.style.top = "48px"
+						errMsgDismiss = undefined;
 						return
 					}
 					setTimeout(check, 300)
@@ -133,10 +273,13 @@
 			document.getElementById("newplayerSubmit").addEventListener("click", ()=>{
 				let nameInput = document.getElementById("newplayerName")
 				let name = nameInput.value
-				if(!name)return
+				if(!name){
+					errMsg("Enter a name first")
+					return
+				}
 				nameInput.value = ""
 				if(Player.players[name]){
-					alreadyMsg()
+					errMsg("Cannot have two players with the same name")
 					return
 				}
 				new Player(name)
@@ -190,6 +333,8 @@
 		</script>
 		<style>	
 
+	
+
 body {
   /*! background: #000; */
   color: white;
@@ -213,6 +358,8 @@ html {
   height: 450px;
   box-shadow: 0 0 30px black;
   background: #000000d4;
+  backdrop-filter: blur(10px);
+  border-radius: 5px;
 }
 #roster {
   width: 250px;
@@ -234,6 +381,7 @@ html {
   margin-top: auto;
   display: flex;
   flex-flow: column;
+  align-items: center;
 }
 #newplayerName {
   background: #ffffff0f;
@@ -246,6 +394,7 @@ html {
     border-bottom-color: currentcolor;
   border-bottom: 3px solid #5b5b5b;
   transition: .2s;
+  width: 90%;
 }
 #newplayerName:focus {
 	border-bottom-color: green;
@@ -258,6 +407,10 @@ html {
   padding: 10px 0;
   margin-top: 8px;
   transition: .1s;
+  height: 42px;
+  width: fit-content;
+  padding: 0 103px;
+  font-weight: 700;
 }
 #newplayerSubmit:hover {
   cursor: pointer;
@@ -277,6 +430,10 @@ html {
   border: none;
   box-shadow: 0 0 16px #000;
   transition: .1s;
+  backdrop-filter: blur(10px);
+  border-radius: 5px;
+  height: 51px;
+  font-weight: 700;
 }
 #go:hover {
   cursor: pointer;
@@ -380,7 +537,7 @@ html {
   cursor: pointer;
 }
 
-#already {
+#err {
   position: relative;
   display: block;
   margin: auto;
@@ -395,9 +552,11 @@ html {
   box-shadow: 0 0 16px #000;
   z-index: -1;
   transition: .2s;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
-#alreadyContainer {
+#errContainer {
 	overflow: clip;
 }
 		
@@ -411,6 +570,41 @@ html {
   overflow: hidden;
   text-overflow: ellipsis;
   width: 200px;
+}
+		
+		
+#newplayerName:hover {
+  cursor: pointer;
+  background: #ffffff1a;
+}
+#newplayerName:focus {
+  font-size: .95em;
+  filter: brightness(1.1);
+  background: #ffffff1a;
+}
+#newplayerSubmit:active {
+  background: #c8c8c80d;
+  font-size: .95em;
+}
+#go:active {
+  background: #000000c9;
+  font-size: 20px;
+}
+
+
+#ellis {
+  background: none;
+  border: none;
+  position: fixed;
+  z-index: -1;
+  width: 100px;
+  height: 100px;
+  top: 453px;
+  left: 200px;
+  border-radius: 100px;
+}
+#ellis:hover {
+  cursor: pointer;
 }
 		
 		</style>
