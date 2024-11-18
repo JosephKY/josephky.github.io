@@ -291,6 +291,11 @@
 				let remaining = Object.values(Player.players)
 				let next = survivors;
 
+				if(remaining.length == 0){
+					errMsg("Add some players first")
+					return;
+				}
+
 				let realRemaining = [];
 				remaining.forEach(p=>{
 					if(!p)return
