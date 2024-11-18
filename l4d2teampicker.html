@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Chogi's Amazing L4D2 Team Picker</title>
+		<body>
+			<div id="main">
+				<div id="roster">
+					<span class=h>Roster</span> 
+					<div id="rosterPlayers"></div>
+					<div id="rosterAdder">
+						<input type=text id=newplayerName placeholder="Player Name...">
+						<button id=newplayerSubmit>Add</button>
+					</div>
+				</div>
+				<div id="teams">
+					<div class=team id="survivors">
+						<span class=h>Survivors</span>
+					</div>
+					<div class=team id="infected">
+						<span class=h>Infected</span>
+					</div>
+				</div>
+			</div>
+			<button id="go">Create Teams</button>
+		</body>
+		<script>
+			class Player {
+				static players = {}
+				
+				constructor(name){
+					Player.players[name] = this
+
+					this.name = name;
+					this.team = null;
+					this.teamSpan = null;
+					
+					this.htmlContainer = document.createElement("div")
+					this.htmlContainer.classList.add("player")
+
+					this.htmlSpan = document.createElement("span")
+					this.htmlSpan.innerHTML = name
+					this.htmlContainer.appendChild(this.htmlSpan)
+
+					this.htmlButtons = document.createElement("div")
+					this.htmlButtons.classList.add("buttons")
+					this.htmlContainer.appendChild(this.htmlButtons)
+
+					this.htmlRemove = document.createElement("button")
+					this.htmlRemove.innerHTML = "X"
+					this.htmlRemove.classList.add("pRemove")
+					this.htmlButtons.appendChild(this.htmlRemove)
+
+					this.htmlNone = document.createElement("button")
+					this.htmlNone.innerHTML = "N"
+					this.htmlNone.classList.add("pNone")
+					this.htmlButtons.appendChild(this.htmlNone)
+
+					this.htmlSurvivor = document.createElement("button")
+					this.htmlSurvivor.innerHTML = "S"
+					this.htmlSurvivor.classList.add("pSurvivor")
+					this.htmlButtons.appendChild(this.htmlSurvivor)
+
+					this.htmlInfected = document.createElement("button")
+					this.htmlInfected.innerHTML = "I"
+					this.htmlInfected.classList.add("pInfected")
+					this.htmlButtons.appendChild(this.htmlInfected)
+
+					this.htmlNone.onclick = this.setNone.bind(this)
+					this.htmlInfected.onclick = this.setInfected.bind(this)
+					this.htmlSurvivor.onclick = this.setSurvivors.bind(this)
+					this.htmlRemove.onclick = this.destroy.bind(this)
+					
+					document.getElementById("rosterPlayers").appendChild(this.htmlContainer)
+					
+					
+				}
+				
+				setNone(){
+					if(this.teamSpan){
+						this.teamSpan.remove()
+					}
+					this.team = null
+					this.teamSpan = null
+				}
+				
+				setInfected(){
+					this.setNone()
+					
+					this.team = "Infected"
+					this.teamSpan = document.createElement("span")
+					this.teamSpan.innerHTML = this.name
+					document.getElementById("infected").appendChild(this.teamSpan)
+				}
+				
+				setSurvivors(){
+					this.setNone()
+					
+					this.team = "Survivors"
+					this.teamSpan = document.createElement("span")
+					this.teamSpan.innerHTML = this.name
+					document.getElementById("survivors").appendChild(this.teamSpan)
+				}
+				
+				destroy(){
+					Player.players[this.name] = null
+					this.setNone()
+					this.htmlContainer.remove()
+				}
+			}
+			
+			document.getElementById("newplayerSubmit").addEventListener("click", ()=>{
+				let nameInput = document.getElementById("newplayerName")
+				let name = nameInput.value
+				if(!name)return
+				new Player(name)
+				nameInput.value = ""
+			})
+
+			document.getElementById("go").addEventListener("click", ()=>{
+				let survivors = [];
+				let infected = [];
+				let remaining = Object.values(Player.players)
+				let next = survivors;
+
+				let realRemaining = [];
+				remaining.forEach(p=>{
+					if(!p)return
+					p.setNone()
+					realRemaining.push(p)
+				})
+				remaining = realRemaining
+
+				let curlength = remaining.length
+				for(let i = 0; i < curlength; i++){
+					console.log(remaining.length)
+					let index = Math.floor(Math.random() * remaining.length)
+					let player = remaining[index];
+					next.push(player)
+					next = next == survivors ? infected : survivors
+					let newarr = [];
+					remaining.forEach(p=>{
+						if(p == player)return;
+						newarr.push(p)
+					})
+					remaining = newarr
+				}
+
+				console.log(survivors, infected)
+				survivors.forEach(p=>{
+					p.setSurvivors()
+				})
+
+				infected.forEach(p=>{
+					p.setInfected()
+				})
+			})
+
+			document.getElementById("newplayerName").addEventListener("keypress", function(event) {
+				if (event.key === "Enter") {
+					event.preventDefault();
+					document.getElementById("newplayerSubmit").click();
+				}
+			}); 
+		</script>
+		<style>
+			
+
+
+			
+
+			body {
+  /*! background: #000; */
+  color: white;
+  width: fit-content;
+  height: fit-content;
+  border-radius: 5px;
+  font-family: system-ui;
+}
+html {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-image: url('https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxH5rd9eDAjcFyv45SRYAFMIcKL_PArgVSL403ulRUWEndVKv4gp-cA192IwUH4rj1KVJig6GcJjsX74znktOPlPLyMriIkDgC6cQmiLGW98L_mFNucBVO2g');
+  background-color: #000;
+}
+#main {
+  /*! border: 3px solid black; */
+  padding: 16px;
+  display: flex;
+  height: 450px;
+  box-shadow: 0 0 30px black;
+  background: #000000d4;
+}
+#roster {
+  width: 250px;
+  padding: 16px;
+  display: flex;
+  flex-flow: column;
+}
+#teams {
+  display: flex;
+}
+.team {
+  width: 200px;
+  padding: 16px;
+  display: flex;
+  flex-flow: column;
+}
+#rosterAdder {
+  margin-top: auto;
+  display: flex;
+  flex-flow: column;
+}
+#newplayerName {
+  background: #ffffff0f;
+  color: white;
+  padding: 8px;
+  outline: none !important;
+  border: none;
+    border-bottom-width: medium;
+    border-bottom-style: none;
+    border-bottom-color: currentcolor;
+  border-bottom: 3px solid #5b5b5b;
+  transition: .2s;
+}
+#newplayerName:focus {
+	border-bottom-color: green;
+}
+#newplayerSubmit {
+  background: #ffffff0d;
+  border: none;
+  font-size: 18px;
+  color: #ccc;
+  padding: 10px 0;
+  margin-top: 8px;
+  transition: .1s;
+}
+#newplayerSubmit:hover {
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.158);
+}
+
+
+#go {
+  margin: auto;
+  display: block;
+  position: relative;
+  top: 12px;
+  font-size: 28px;
+  background: #000000ab;
+  color: #d0d0d0;
+  padding: 12px 64px;
+  border: none;
+  box-shadow: 0 0 16px #000;
+  transition: .1s;
+}
+#go:hover {
+  cursor: pointer;
+  background: rgba(31, 31, 31, 0.527);
+}
+
+.h {
+	font-size: 1.35em;
+}
+
+
+.player .buttons {
+  margin-left: auto;
+  display: block;
+}
+.player {
+  height: fit-content;
+  display: flex;
+  margin: 8px 0;
+}
+
+.player .buttons button {
+	width: 22px;
+	height: 22px;
+	margin-left: 4px;
+}
+
+.team span:not(:first-child) {
+	margin: 5px 0;
+}
+
+.player span {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 146px;
+}
+
+
+#survivors .h {
+  color: #bf9636;
+}
+#infected .h {
+  color: #359735;
+}
+#roster .h {
+  color: #ca3c3c;
+}
+
+
+.pRemove {
+  color: #c00;
+  background: none;
+  border: none;
+  font-weight: bold;
+  font-size: 16px;
+}
+.pRemove:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+
+.pNone {
+  color: rgb(209, 209, 209);
+  background: none;
+  border: none;
+  font-weight: bold;
+  font-size: 16px;
+}
+.pNone:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+
+.pSurvivor {
+  color: rgb(172, 147, 35);
+  background: none;
+  border: none;
+  font-weight: bold;
+  font-size: 16px;
+}
+.pSurvivor:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.pInfected {
+  color: rgb(24, 116, 28);
+  background: none;
+  border: none;
+  font-weight: bold;
+  font-size: 16px;
+}
+.pInfected:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+		
+		</style>
+</html>
