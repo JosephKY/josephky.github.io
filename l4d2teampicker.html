@@ -3,6 +3,10 @@
 	<head>
 		<title>Chogi's Amazing L4D2 Team Picker</title>
 		<body>
+			<div id="alreadyContainer">
+				<span id="already">Cannot have two players with the same name</span>
+			</div>
+			
 			<div id="main">
 				<div id="roster">
 					<span class=h>Roster</span> 
@@ -24,6 +28,7 @@
 			<button id="go">Create Teams</button>
 		</body>
 		<script>
+
 			class Player {
 				static players = {}
 				
@@ -102,18 +107,39 @@
 				}
 				
 				destroy(){
-					Player.players[this.name] = null
+					Player.players[this.name] = undefined
 					this.setNone()
 					this.htmlContainer.remove()
 				}
+			}
+
+			const already = document.getElementById("already")
+			let alreadyMsgDismiss;
+			function alreadyMsg(){
+				already.style.top = "0"
+				alreadyMsgDismiss = Date.now() + 3500
+				function check(){
+					if(!alreadyMsgDismiss)return
+					if(Date.now() > alreadyMsgDismiss){
+						already.style.top = "48px"
+						alreadyMsgDismiss = undefined;
+						return
+					}
+					setTimeout(check, 300)
+				}
+				check()
 			}
 			
 			document.getElementById("newplayerSubmit").addEventListener("click", ()=>{
 				let nameInput = document.getElementById("newplayerName")
 				let name = nameInput.value
 				if(!name)return
-				new Player(name)
 				nameInput.value = ""
+				if(Player.players[name]){
+					alreadyMsg()
+					return
+				}
+				new Player(name)
 			})
 
 			document.getElementById("go").addEventListener("click", ()=>{
@@ -351,6 +377,27 @@ html {
 .pInfected:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+
+#already {
+  position: relative;
+  display: block;
+  margin: auto;
+  top: 48px;
+  background: rgba(187, 0, 0, 0.562);
+  color: white;
+  font-weight: bold;
+  width: 500px;
+  height: 24px;
+  text-align: center;
+  padding: 12px 0;
+  box-shadow: 0 0 16px #000;
+  z-index: -1;
+  transition: .2s;
+}
+
+#alreadyContainer {
+	overflow: clip;
 }
 		
 		</style>
